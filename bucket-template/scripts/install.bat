@@ -1,6 +1,6 @@
 @echo off
 SET APP_PATH="/Apps/ATCLab"
-SET APP_BUCKET="atc-lab-apptest"
+SET APP_BUCKET="atc-lab-app"
 
 REM create the installation directory
 CD /
