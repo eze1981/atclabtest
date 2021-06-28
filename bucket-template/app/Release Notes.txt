@@ -1,0 +1,470 @@
+*******************
+Version
+*******************
+2.4.5.15
+
+*******************
+Release Date
+*******************
+Monday 23rd March 2015
+
+*******************
+Developers
+*******************
+Aaron Yeung
+
+*******************
+CVS Branch
+*******************
+atclab-rel-2_4_5_branch
+
+*******************
+CVS Tag
+*******************
+atclab-rel-2_4_5_15
+
+*******************
+Notes:
+*******************
+2.4.5.15 - Added section in the output CSV log for scoring for each trial with a grand total. An example output is as follows:
+
+	  Trial	Total Score
+	  test2 30
+	  test1 -10
+	  test3 40
+	  Total 60
+
+	 - Re-implemented unique recall number for each text box in the instruction task for each trial
+
+2.4.5.14 - Added scriptable option to disable the double clicking on aircraft to rotate the aircraft text details
+
+	  *******************************************************************************************************************
+          XML Element	Attributes			Description						Values
+          *******************************************************************************************************************
+	  atc:trial					Parent XML element.
+			atc:disable_callout_rotation	Enable/disable double click to rotate aircraft details	True, False
+	  Example:
+	  
+	  <atc:trial atc:idx='test2' atc:param='default' atc:map="map1" atc:sky="script2" atc:ui="ui001" atc:notify_missed_acceptance='false' atc:notify_missed_handoff='false' atc:disable_callout_rotation='true'>
+
+	 - Modified nback task to allow sub second timing in the displaying of the initial screen and stimuli
+	   The following changes in XML attributes have been made
+
+	  *******************************************************************************************************************
+	  Parent XML		Original Attribute	New Attribute		Note
+	  *******************************************************************************************************************
+	  initialDisplayElement	duration		duration_ms		This element now specifies the duration to display the initial screen in milliseconds rather than seconds
+	  stimuliElement	display_duration	display_duration_ms	This element now specifies the duration to display the stimuli in milliseconds rather than seconds
+
+	  Example:
+	  <atc:nbackTask atc:start='1' atc:end='72' atc:auto_handoff='true' atc:auto_accept='true' atc:background_colour='black' atc:response_key='space' atc:n_factor='2' atc:reptition_probability='40' atc:show_task='true'>
+            <atc:initial_display atc:symbol='+' atc:font='Courier' atc:font_size='50' atc:font_colour='white' atc:duration_ms='3000' atc:show_timer='true' atc:x='487' atc:y='330'/>
+            <atc:stimuli atc:font='SansSerif' atc:font_size='50' atc:font_colour='white' atc:display_duration_ms='1500' atc:show_timer='true' atc:x='487' atc:y='330' />
+       	  ...   
+          </atc:nbackTask>
+
+	 - Fixed bug in the instruction task which would only write the results in the instruction task text box for every second instruction
+
+2.4.5.13 - Decreased the aircraft acceptance time window from 20 seconds to 15 seconds
+
+2.4.5.12 - Added logging of interruption tasks to the output .xml file. The output XML logging are described below:
+	  *******************************************************************************************************************
+          XML Element				Description							Values
+          *******************************************************************************************************************
+	  interruption_type 			Type of interruption						"Interruption" or "NBack"
+    	  start_time				Programmed start time of interruption				
+	  end_time				Programmed end time of interruption
+    	  show_full_screen			Whether the task was shown in full screen			0 = no, 1 = yes
+    	  external_program			Name of external program that was run
+    	  auto_accept				Whether aircraft were auto accepted during interruption		0 = no, 1 = yes
+    	  auto_handoff				Whether aircraft were auto handed off during interruption	0 = no, 1 = yes
+
+	 - Added logging of interruption tasks to the output .csv file. The output fields are described below:
+	  *******************************************************************************************************************
+          Field			Description							Values
+          *******************************************************************************************************************
+	  Trial			Name of the trial that the interruption occurred in
+	  Interruption Type	Type of interruption						"Interruption" or "NBack"
+    	  Start Time		Programmed start time of interruption				
+	  End Time		Programmed end time of interruption
+    	  Show Full Screen	Whether the task was shown in full screen			0 = no, 1 = yes
+    	  External Program	Name of external program that was run
+    	  Auto Accept		Whether aircraft were auto accepted during interruption		0 = no, 1 = yes
+    	  Auto Handoff		Whether aircraft were auto handed off during interruption	0 = no, 1 = yes
+
+	 - Added additional field in the aircraft flash details section of the output .csv file called "Automatic" to indicate if an aircraft is
+	   automatically accepted or handed off. Values are 0 (not automatic) or 1 (automatic acceptance/handoff)
+
+	 - Added logging of reminder box dismiss button times to the output .xml file. The output XML logging are described below:
+	  *******************************************************************************************************************
+          XML Element		Description								Values
+          *******************************************************************************************************************
+	  reminder_box		Tag to indicate that the reminder box dismiss button was pressed	Aircraft callsign that had the dismiss button pressed
+	  dismiss_button	Tag to indicate that the reminder box dismiss button was pressed	"pressed"
+	  clicked_time		Millisecond time that the dismiss button was pressed
+
+	- Added logging of reminder box dismiss button times to the output .csv file. The output fields are described below:
+	  *******************************************************************************************************************
+          Field			Description								Values
+          *******************************************************************************************************************
+	  Trial  		Name of the trial that the dismiss button was pressed
+	  Callsign		Aircraft callsign that had the dismiss button pressed
+	  Dismiss Time		Time in seconds into the trial that the dismiss button was pressed
+	  Dismiss Time HP	Time in milliseconds into the trial that the dismiss button was pressed
+
+	- Added calculation of Nback task results based on participant's inputs/non-inputs in the N back task. The are described as follows:
+	  ***********************************************************************************************************************
+	  Result		Description
+	  ***********************************************************************************************************************	  
+	  Hit			Participant correctly responds to a stimuli that was the same as the stimuli N times before	
+	  Miss			Participant fails to respond to a stimuli that was the same as the stimuli N times before
+	  Correct rejection	Participant correct ignores the stimuli which is not the same as the stimulis N times before
+	  False alarm		Paricipant incorrectly responds to a stimuli that was not the same as the stimuli N times before
+
+	 - Added logging of N back task results to the output .xml file. The output XML logging are described below:
+	  *******************************************************************************************************************
+          XML Element		Description								Values
+          *******************************************************************************************************************
+	  NBackTask_response	Stimuli order of the stimuli that was presented
+	  stimuli		The actual stimuli that was displayed to the participant
+	  response		The result of the paritcipant's response				hit, miss, false_alarm, correct_rejection
+
+	 - Added logging of N back task results to the output .csv file. The output fields are described below:
+	  *******************************************************************************************************************
+          XML Element		Description								Values
+          *******************************************************************************************************************
+	  Trial	  		Name of the trial that the N back response was generated in
+	  Stimuli Number	Stimuli order of the stimuli that was presented
+	  Stimuli		The actual stimuli that was displayed to the participant
+	  Response		The result of the paritcipant's response				hit, miss, false_alarm, correct_rejection
+
+	 - Added a count down timer for the blank interruption task. It can be enabled/disabled with the XML below:
+	  *******************************************************************************************************************
+          XML Element		Attribute	Description							Values
+          *******************************************************************************************************************
+	  atc:interruption	 atc:show_timer	Enable/disable countdown timer in the blank interruption task	'true' or 'false'
+
+	  Example:
+	  <atc:interruption atc:start='3' atc:end='21' atc:auto_handoff='true' atc:auto_accept='false' atc:show_blank_screen='true' atc:show_timer='true' atc:external_program='"calc.exe"'/>
+
+	  - Added ability to enable/disable error pop up dialogs when a paricipant misses an aircraft acceptance or handoff.
+	    This can be achieved with the XML below:
+	  ***********************************************************************************************************************************************
+          XML Element	Attribute			Description									Values
+          ***********************************************************************************************************************************************
+	  atc:trial	atc:notify_missed_acceptance	Enable/disable pop up error dialog when a paricipant misses an acceptance	'true' or 'false'
+			atc:notify_missed_handoff	Enable/disable pop up error dialog when a paricipant misses a handoff		'true' or 'false'
+
+	  Example:
+	  <atc:trial atc:idx='test2' atc:param='default' atc:map="map1" atc:sky="script2" atc:ui="ui001" atc:notify_missed_acceptance='false' atc:notify_missed_handoff='false'>
+
+2.4.5.11 - Added N Back Task to display random numbers at a set interval as a distraction to the ATC task.
+	   The N Back task is displayed in full screen and covers the ATC task which continues to run in the background
+	   The N Back task can be specified with XML as detailed in the table below:
+
+	  *******************************************************************************************************************
+          XML Element	Attributes			Description
+          *******************************************************************************************************************
+	  atc:nbackTask					N Back Task parent XML element.
+			atc:start			Time in seconds into the ATC task to display the N Back task.
+			atc:end				Time in seconds into the ATC task to stop showing the N Back task.
+			atc:auto_handoff		Determines whether aircraft are automatically handed off while N Back ask is running ('true' or 'false').
+			atc:auto_accept			Determines whether aircraft are automatically accepted while N Back task is running ('true' or 'false').
+			atc:background_colour		Set the background colour of the N Back task screen ('black', 'white', 'blue', 'red', 'green').
+			atc:response_key		The key that a participant needs to press to respond in the N Back task ('space' or an alpha-numeric key).
+			atc:n_factor			The Nth number prior to the current stimuli that needs to be recognized as a match.
+			atc:reptition_probability	The probability that the current stimuli matches the stimuli Nth number previously shown.
+			atc:show_task			Toggles if the N Back task is to be displayed. Used to test what is happening to ATC while the N Back task is running ('true' or 'false').
+	  atc:initial_display				Sub-element of <atc:nbackTask>. Specifies the inital character to be displayed before the stimuli are presented. 
+							User cannot make a response during this state.
+			atc:symbol			An alpha-numeric character to be displayed initially.
+			atc:font			Name of the font to display the initial symbol in. ('Courier', 'Helvetica', 'SansSerif', 'Times', 'Serif', 'TypeWriter', 'OldEnglish', 'Decorative', 'System')
+			atc:font_size			Font size for the initial display to be displayed in.
+			atc:font_colour			Font colour of the initial display ('black', 'white', 'blue', 'red', 'green').
+			atc:duration			Duration in seconds for the initial display to be shown for.
+			atc:show_timer			Show/Hide the countdown timer before the first stimuli is shown ('true' or 'false').
+			atc:x				Horizontal position of the initial display symbol in pixels.
+			atc:y				Veritical position of the initial display symbol in pixels.
+	  atc:stimuli					Sub-element of <atc:nbackTask>. Specifies the stimuli presentation details.
+			atc:font			Name of the font to display the initial symbol in. ('Courier', 'Helvetica', 'SansSerif', 'Times', 'Serif', 'TypeWriter', 'OldEnglish', 'Decorative', 'System')
+			atc:font_size			Font size for the initial display to be displayed in.
+			atc:font_colour			Font colour of the initial display ('black', 'white', 'blue', 'red', 'green').
+			atc:display_duration		Duration in seconds for each stimuli to be displayed for.
+			atc:show_timer			Show/Hide the countdown timer before the next stimuli is shown ('true' or 'false').
+			atc:x				Horizontal position of the stimuli in pixels.
+			atc:y				Veritical position of the stimuli in pixels.
+	  atc:correct_feedback				Sub-element of <atc:nbackTask>. Specifies the user feedback when they respond correctly.
+			atc:symbol			The symbol to be displayed when a user correctly identifies a stimuli as an N back stimuli ('circle', 'square').
+			atc:colour			Colour of the feedback symbol ('black', 'white', 'blue', 'red', 'green').
+			atc:width			Width of the feedback symbol.
+			atc:height			Height of the feedback symbol.
+			atc:x				Horizontal position of the feedback symbol in pixels.
+			atc:y				Vertical position of the feedback symbol in pixels.
+	  atc:incorrect_feedback			Sub-element of <atc:nbackTask>. Specifies the user feedback when they respond incorrectly.
+			atc:symbol			The symbol to be displayed when a user incorrectly identifies a stimuli as an N back stimuli ('circle', 'square'). 
+							If the user responds within the first N stimuli, it is also considered as incorrect.
+			atc:colour			Colour of the feedback symbol ('black', 'white', 'blue', 'red', 'green').
+			atc:width			Width of the feedback symbol.
+			atc:height			Height of the feedback symbol.
+			atc:x				Horizontal position of the feedback symbol in pixels.
+			atc:y				Vertical position of the feedback symbol in pixels.
+          atc:timer 
+			atc:font			Name of the font to display the count down timer in. ('Courier', 'Helvetica', 'SansSerif', 'Times', 'Serif', 'TypeWriter', 'OldEnglish', 'Decorative', 'System')
+			atc:font_size			Font size for the count down timer to be displayed in.
+			atc:font_colour			Font colour of the count down timer ('black', 'white', 'blue', 'red', 'green').
+			atc:x				Horizontal position of the count down timer in pixels.
+			atc:y				Veritical position of the count down timer in pixels.
+
+Example:
+<atc:trial atc:idx='test2' atc:param='default' atc:map="map1" atc:sky="script2" atc:ui="ui001">
+	<atc:timeEvent>300</atc:timeEvent>
+        <atc:nbackTask atc:start='2' atc:end='180' atc:auto_handoff='true' atc:auto_accept='true' atc:background_colour='black' atc:response_key='space' atc:n_factor='2' atc:reptition_probability='40' atc:show_task='true'>
+          <atc:initial_display atc:symbol='+' atc:font='Courier' atc:font_size='50' atc:font_colour='white' atc:duration='3' atc:show_timer='true' atc:x='487' atc:y='330'/>
+          <atc:stimuli atc:font='SansSerif' atc:font_size='50' atc:font_colour='white' atc:display_duration='2' atc:show_timer='true' atc:x='487' atc:y='330' />
+          <atc:correct_feedback atc:symbol='circle' atc:colour='green' atc:width='15' atc:height='15' atc:x='500' atc:y='410'/>
+          <atc:incorrect_feedback atc:symbol='square' atc:colour='red' atc:width='15' atc:height='15' atc:x='500' atc:y='410'/>
+          <atc:timer atc:font='SansSerif' atc:font_size='20' atc:font_colour='white' atc:x='465' atc:y='450' />
+        </atc:nbackTask>
+</atc:trial>
+
+
+2.4.5.10  - Modified aircraft behaviour such that if aircraft are ready to be accepted (flashing orange) or
+            ready to be handed off (flashing blue) at the time of interruption, that aircraft will automatically
+	    be accepted or handed off.
+
+2.4.5.9   - Implemented scriptable external program that can be run during the interruption period. An experimenter
+	    can specify the name of the .exe file without the full path or include the full path to the executable
+	    enclosed between double quotes ("")
+
+          *******************************************************************************************************************
+          XML Element		Attributes  		Description
+          *******************************************************************************************************************
+	  atc:interruption	atc:external_program	Name of executable or full path to executable
+
+	Example:
+	<atc:trial atc:idx='test1' atc:param='default' atc:map="map1" atc:sky="script1" atc:ui="ui001">
+		<atc:timeEvent>300</atc:timeEvent>
+        	<atc:interruption atc:start='60' atc:end='180' atc:auto_handoff='true' atc:auto_accept='true' 
+			atc:show_blank_screen='false' 
+			atc:external_program='"C:\Program Files\Windows NT\Accessories\wordpad.exe"'/>
+	</atc:trial>
+2.4.5.8   - Implemented scriptable interruption task with configurable start time, end time, automatic aircraft acceptance,
+	    automatic aircraft handoff and the displaying of a full black screen
+          *******************************************************************************************************************
+          XML Element		Attributes  		Description
+          *******************************************************************************************************************
+	  atc:interruption	atc:start		Trial time when the interruption begins
+				atc:end			Trial time when the interruption ends
+				atc:auto_handoff	Set if aircraft are automatically handed off during the interruption (true/false)
+				atc:auto_accept		Set if aircraft are automatically accepted during the interruption (true/false)
+				atc:show_blank_screen	Set if a full black screen is to be displayed to hide the aircraft simulation (true/false)
+				atc:external_program	Not implemented yet
+
+	Example:
+	<atc:trial atc:idx='test2' atc:param='default' atc:map="map1" atc:sky="script2" atc:ui="ui001">
+		<atc:timeEvent>300</atc:timeEvent>
+        	<atc:interruption atc:start='40' atc:end='180' atc:auto_handoff='false' atc:auto_accept='false' atc:show_blank_screen='true' atc:external_program='c:\' />
+	</atc:trial>
+2.4.5.7   - Fixed two issues:
+		1) Canvasview grabs all the keypress events which causes other widgets like the altitude selection
+		   tool to not be able to be escaped
+		2) When aircraft are set with a customized handoff key, the default handoff key 'h' is not usable
+		   for handoff
+
+2.4.5.6   - Implemented a scriptable handoff keys for individual aircraft. The default handoff key is still the 'h' key.
+
+          *******************************************************************************************************************
+          XML Element                 	Description
+          *******************************************************************************************************************
+	  atc:handoffKey		Specifies the key that will be used to handoff an aircraft instead of the default 'h' key. E.g. "w"
+					For special non-character keys, the following are supported:
+					- "key_up" 	- Up arrow
+					- "key_down"	- Down arrow
+					- "key_left"	- Left arrow
+					- "key_right"	- Right arrow
+            					    
+	  Example:
+	  <atc:aircraft atc:idx="PM2" atc:type="A320">
+		<atc:start>0</atc:start>
+		<atc:altitude>46000</atc:altitude>
+        	<atc:altitudeChangeEnableTime>20</atc:altitudeChangeEnableTime>
+		<atc:velocity>450</atc:velocity>
+		<atc:flightpath>
+			<atc:point atc:x='38'    atc:y='30.86' />
+			<atc:point atc:x='30.6458'    atc:y='24.2536' />
+			<atc:point atc:x='23.7007'    atc:y='18.0156' />
+			<atc:point atc:x='23.7115'    atc:y='0' />
+		</atc:flightpath>
+		<atc:acceptedStateFlashParams>
+			<atc:flashItem>fl</atc:flashItem>
+			<atc:colour>red</atc:colour>
+		</atc:acceptedStateFlashParams>
+		<atc:coordinationRequest atc:key='9'>
+			<atc:show>true</atc:show>
+		</atc:coordinationRequest>
+		<atc:handoffkey>key_left</atc:handoffkey>
+	  </atc:aircraft>	
+
+2.4.5.5   - Implemented a scriptable altitude change time restriction for aircraft.
+
+          *******************************************************************************************************************
+          XML Element                 	Description
+          *******************************************************************************************************************
+	  atc:altitudeChangeEnableTime	Specifies the time an aircraft's altitude selection list can be enabled
+          
+            					    
+	  Example:
+	  <atc:aircraft atc:idx="PM2" atc:type="A320">
+		<atc:start>0</atc:start>
+		<atc:altitude>46000</atc:altitude>
+        	<atc:altitudeChangeEnableTime>20</atc:altitudeChangeEnableTime>
+		<atc:velocity>450</atc:velocity>
+		<atc:flightpath>
+			<atc:point atc:x='38'    atc:y='30.86' />
+			<atc:point atc:x='30.6458'    atc:y='24.2536' />
+			<atc:point atc:x='23.7007'    atc:y='18.0156' />
+			<atc:point atc:x='23.7115'    atc:y='0' />
+		</atc:flightpath>
+		<atc:acceptedStateFlashParams>
+			<atc:flashItem>fl</atc:flashItem>
+			<atc:colour>red</atc:colour>
+		</atc:acceptedStateFlashParams>
+		<atc:coordinationRequest atc:key='9'>
+			<atc:show>true</atc:show>
+		</atc:coordinationRequest>
+	  </atc:aircraft>	
+
+2.4.5.4   - Implemented a scriptable dismiss button for aircraft reminder boxes.
+
+          *******************************************************************************************************************
+          XML Element                 Description   Attributes  Description
+          *******************************************************************************************************************
+	  atc:dismissButton
+          
+            					    enable_time Time in the simulation to enable the dismiss button
+            					    label       The text to display on the dismiss button
+            					    fontSize	The font size of the text to be displayed on the dismiss button
+            					    width	The width of the dismiss button in pixels
+            					    height	The height of the dismiss button in pixels
+            					    posX	The horizontal distance from the centre of the aircraft to the top left corner of the dismiss button in pixels
+            					    posY	The vertical distance from the centre of the aircraft to the top left corner of the dismiss button in pixels
+
+	  Example:
+	  <atc:reminderBox atc:bgColor="darkOrange" atc:width='380' atc:height='70' atc:aircraft='C69' atc:posX='10' 
+		atc:posY='10' atc:displayText="This is just a test"  atc:displayTextSize='20'>
+		<atc:displayTime atc:startTime='0' atc:endTime='600'/>
+		<atc:flashColor>darkOrange</atc:flashColor>
+		<atc:flashColor>darkOrange</atc:flashColor>
+		<atc:flashTime atc:startTime='15' atc:endTime='600'/>
+            	<atc:dismissButton atc:enable_time='10' atc:label="Multiple reminderboxes" atc:fontSize='10' atc:width='120' atc:height='30' atc:posX='20' atc:posY='70'/>
+	  </atc:reminderBox>
+
+2.4.5.3	  - Implemented scriptable sound file for trial tasks which allow a .wav file to be played while the trial is
+	    running.
+
+	  *******************************************************************************************************************
+          XML Element                 Value	Description   
+          *******************************************************************************************************************
+          atc:sound                   [String]	The full path to sound file in .wav format to be played for the
+  				                trial. Note, the sound file will be stopped if its duration is longer than
+					        the trial duration.
+
+          Example:
+          <atc:trial atc:idx='test1' atc:param='default' atc:map="map1" atc:sky="scriptt1" atc:ui="ui001" atc:sound="C:\Documents and Settings\Aaron Yeung\My Documents\Key Centre For Human Factors\Work\Source\atc_lab\Debug\incorrect.wav">
+              <atc:timeEvent>300</atc:timeEvent>
+          </atc:trial>
+
+2.4.5.2	  - Implemented scriptable update_rate and update_multiplier for the engine clock.
+	  *******************************************************************************************************************
+          XML Element                 Value	Description   
+          *******************************************************************************************************************
+          update_rate                 [Integer]	The rate (in ms) that the clock should update
+	  update_multiplier	      [Integer]	The multiples the clock should count in. E.g. a value of 2
+				    	        means the clock will update in multples of 2 (Twice as fast)
+
+          Example:
+          <atc:param atc:idx='default'>
+      		<atc:sectorEntryDistance>5</atc:sectorEntryDistance>
+      		<atc:sectorExitDistance>0</atc:sectorExitDistance>
+      		<atc:update_rate>1000</atc:update_rate>
+      		<atc:update_multiplier>2</atc:update_multiplier>
+      		<atc:horizontal_doms>5</atc:horizontal_doms>
+      		<atc:vertical_doms>0</atc:vertical_doms>
+    	  </atc:param>
+
+2.4.5.1   - Branched off from version 2.4.5
+            Added millisecond timer using the hosts high performance counter (if it exists). Timing in the resulting log file            is encased in the <hpc_elapsed_time> XML tag. Also added millisecond fields in the CSV log file.
+
+2.4.5     - Added XML sub-element to acceptedStateFlashParams element called flashColour. This was used instead of
+            the equivalent element 'colour' for acceptedStateFlashParams because Shayne had many scripts with 
+            <acceptedStateFlashParams><colour>red</colour></acceptedStateFlashParams> but did not want those aircrafts
+            to be red. So had to add a new element so that only the few aircrafts that need to flash red would be
+            shown as red. The aircrafts with <colour>red</colour> would be ignored and default to flash orange
+
+2.4.4     - Removed functionality added in v2.4.3 where an experimenter could change the flash colour to be red when an
+            aircraft is in a proposed state.
+
+          - Removed XML script elements
+          *******************************************************************************************************************
+          XML Element                 Description   Attributes  Description
+          *******************************************************************************************************************
+          <acceptedStateFlashParams>                colour      The colour an aircraft is to flash when in the proposed
+                                                                state ready to be accepted. (Orange by default)
+          Example:
+          <atc:acceptedStateFlashParams>
+            <atc:colour>red</atc:colour>
+          </atc:acceptedStateFlashParams
+
+          - Added more flexible checks in the instruction screen's recall tasks. The instruction task now removes leading,
+            trailing and duplicate spaces in the entered text and converts to all uppercase (The same is applied to the
+            answer that is scripted into the instruction task).
+
+2.4.3     - Modified the Excel logger to write the files when the trial ends (either by timing out or by pressing 
+            'alt+ctrl+n') rather than just when the trial times out.
+
+2.4.2     - Fixed problem with canvasview not taking focus so that keypresses were not working for onscreen sprites. 
+            This was fixed by calling canvasview's setFocus() method after task::showEvent (which calls setFocus).
+
+          - Added functionality to allow an experimenter to script in the flash colour to be red when an aircraft is in
+            a proposed state ready to be accepted.
+
+          - New XML script elements
+          *******************************************************************************************************************
+          XML Element                 Description   Attributes  Description
+          *******************************************************************************************************************
+          <acceptedStateFlashParams>                colour      The colour an aircraft is to flash when in the proposed
+                                                                state ready to be accepted. (Orange by default)
+          Example:
+          <atc:acceptedStateFlashParams>
+            <atc:colour>red</atc:colour>
+          </atc:acceptedStateFlashParams
+
+2.4.1     - Added functionality to allow reminder boxes to be attached to
+            aircrafts
+          - New XML script elements
+          *******************************************************************************************************************
+          XML Element       Description                   Attributes  Description
+          *******************************************************************************************************************
+          <reminderBox>                                   aircraft    A string which represents the aircraft that the
+                                                                      reminder box should attach to. If this is ommitted
+                                                                      then the reminder box will just be a standard
+                                                                      reminder box that is displayed at a certain location
+                                                                      on screen. If this attribute is specified, the posX
+                                                                      and posY attributes then become offsets from the 
+                                                                      centre of the plane rather than coordinates on the map
+          Example:
+          <atc:reminderBox atc:bgColor="yellow" atc:width='420' atc:height='90' atc:posX='2080' 
+            atc:posY='880' atc:aircraft='C10' 
+            atc:displayText="If CallSign Greater 88/n Then Press 9" atc:displayTextSize='22'>
+            <atc:displayTime atc:startTime='82' atc:endTime='102'/>
+            <atc:flashColor>darkorange</atc:flashColor>
+            <atc:flashTime atc:startTime='236' atc:endTime='256'/>
+          </atc:reminderBox>
+
+2.4.0     - Disabled the Ok pushbutton in the instruction task if the textbox 
+            is empty
+            This prevents participants from entering nothing in the textbox
+          - Instruction tasks are now fixed so that an experimenter can specify 
+            a key to press to close an instruction screen
+          - Added version numbering so that particular versions of ATCLab can
+            be easily identified in the future
