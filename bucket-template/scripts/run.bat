@@ -1,7 +1,7 @@
 @echo off
 SET APP_PATH="/Apps/ATCLab"
-SET APP_BUCKET="atc-lab-apptest"
-SET DATA_BUCKET="atc-lab-datatest"
+SET APP_BUCKET="atc-lab-app"
+SET DATA_BUCKET="atc-lab-data"
 
 cd "%APP_PATH%"
 
