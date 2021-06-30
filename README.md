@@ -1,5 +1,3 @@
-This vignette is associated with a tutorial paper "*Tutorial for Integrating Experimental Lab Studies Online Through AWS*" (CITE, add preprint to References list), available from the [PsyArXiv](https://psyarxiv.com). All project files are available at our [Open Science Framework](https://osf.io) page.
-
 The content in each section is organized as follows:
 
 - Creating S3 Buckets
